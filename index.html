@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Little Reminder for Roshni Das 😉</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink-light: #FFD1DC;
+            --pink-medium: #FFB6C1;
+            --purple-light: #E6E6FA;
+            --purple-medium: #D8BFD8;
+            --peach-light: #FFDAB9;
+            --peach-medium: #FFC0CB;
+            --text-dark: #333333;
+            --text-light: #ffffff;
+            --accent-pink: #FF69B4; /* Hot pink for accents */
+            --accent-purple: #8A2BE2; /* Blue violet for accents */
+        }
+
+        body {
+            font-family: 'Baloo Bhai 2', cursive;
+            background: linear-gradient(135deg, var(--purple-light) 0%, var(--peach-light) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Make it full viewport height */
+            width: 100vw; /* Make it full viewport width */
+            margin: 0;
+            padding: 0; /* Remove padding for full screen */
+            box-sizing: border-box;
+            color: var(--text-dark);
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        h1, h2 {
+            font-family: 'Pacifico', cursive;
+            color: var(--accent-purple);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            text-align: center;
+            max-width: 90%; /* Responsive max-width */
+            width: 500px; /* Base width */
+            transition: all 0.5s ease-in-out;
+            opacity: 0;
+            /* Adjusted transform to move content slightly down */
+            transform: translateY(20px);
+            pointer-events: none;
+            position: absolute; /* To stack sections and manage visibility */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -30%); /* Changed from -40% to -30% to shift further down */
+            min-height: 400px; /* Ensure consistent height for transitions */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container.active {
+            opacity: 1;
+            transform: translate(-50%, -30%) translateY(0); /* Apply the same shift for active state */
+            pointer-events: all;
+            position: relative; /* Take up space when active */
+        }
+
+        /* Specific styles for each section */
+        #password-gate, #loading-screen, #reply-section, #dm-guide-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Password Gate */
+        #password-gate input {
+            padding: 12px 20px;
+            border: 2px solid var(--purple-medium);
+            border-radius: 10px;
+            width: 80%;
+            max-width: 300px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        #password-gate input:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
+        }
+        #password-gate button {
+            background-color: var(--accent-purple);
+            color: var(--text-light);
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+        }
+        #password-gate button:hover {
+            background-color: #7B1FA2; /* Darker purple */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.4);
+        }
+        #password-feedback {
+            color: #E74C3C; /* Red for error */
+            margin-top: 15px;
+            font-weight: bold;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+        #password-feedback.show {
+            opacity: 1;
+        }
+
+        /* Loading Screen */
+        .loader {
+            border: 8px solid var(--pink-light);
+            border-top: 8px solid var(--accent-pink);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1.5s linear infinite;
+            margin: 30px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #loading-text {
+            overflow: hidden; /* Ensures text is clipped for typing effect */
+            white-space: nowrap; /* Prevents text from wrapping */
+            margin: 20px auto;
+            font-size: 1.1em;
+            border-right: .15em solid var(--accent-pink); /* The blinking cursor */
+            animation: typing 3.5s steps(40, end) forwards, blink-caret .75s step-end infinite;
+        }
+        /* Typing animation */
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        /* Blinking cursor animation */
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--accent-pink); }
+        }
+
+        /* Reply Button */
+        #reply-button {
+            background: linear-gradient(45deg, var(--accent-pink), var(--purple-medium));
+            color: var(--text-light);
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.4);
+            margin-top: 30px;
+        }
+        #reply-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 25px rgba(255, 105, 180, 0.5);
+        }
+
+        /* DM Guide Section */
+        #dm-guide-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+            font-size: 1.1em;
+        }
+        #dm-guide-section ul li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        #dm-guide-section ul li span {
+            margin-right: 10px;
+            font-size: 1.3em;
+            color: var(--accent-purple);
+        }
+        #copy-handle-btn {
+            background-color: var(--accent-purple);
+            color: var(--text-light);
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(138, 43, 226, 0.2);
+            margin-top: 20px;
+        }
+        #copy-handle-btn:hover {
+            background-color: #7B1FA2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(138, 43, 226, 0.3);
+        }
+        #copy-feedback {
+            color: var(--accent-pink);
+            margin-top: 10px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #copy-feedback.show {
+            opacity: 1;
+        }
+
+        /* Confetti animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-pink);
+            opacity: 0;
+            border-radius: 50%;
+            animation: confetti-fall 3s ease-out forwards;
+            pointer-events: none;
+        }
+        .confetti:nth-child(2n) { background-color: var(--accent-purple); }
+        .confetti:nth-child(3n) { background-color: var(--peach-medium); }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+                min-height: 350px;
+                width: 95%; /* Even wider on small screens */
+            }
+            h1 { font-size: 2.2em; }
+            h2 { font-size: 1.8em; }
+            #password-gate input, #reply-button, #copy-handle-btn {
+                width: 90%;
+                font-size: 1em;
+                padding: 10px 15px;
+            }
+            #reply-button {
+                font-size: 1.2em;
+                padding: 15px 25px;
+            }
+            #loading-text, #dm-guide-section ul li {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="relative w-full h-full flex flex-col items-center justify-center">
+        <!-- Password Gate -->
+        <div id="password-gate" class="container active">
+            <h1 class="text-3xl font-bold mb-6">Welcome, My Friend! 👋</h1>
+            <p class="text-lg mb-4">Enter your full name to continue:</p>
+            <input type="text" id="password-input" placeholder="👀 Type your name..." autocomplete="off">
+            <button id="password-submit">Let's Go! ✨</button>
+            <p id="password-feedback" class="text-sm"></p>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="container">
+            <h2 class="text-3xl font-bold mb-4" id="loading-title">🔍 Searching for your DM in Instagram...</h2>
+            <div class="loader"></div>
+            <p class="text-lg" id="loading-text">Finding it is harder than finding a seat in Mumbai local! 😤</p>
+        </div>
+
+        <!-- Reply Button Section -->
+        <div id="reply-section" class="container">
+            <h2 class="text-3xl font-bold mb-4">A Little Message For You!</h2>
+            <p class="text-xl mb-6">I've been waiting... and waiting... and waiting! 😅</p>
+            <button id="reply-button">Still waiting... so I made you a website to reply 😔</button>
+        </div>
+
+        <!-- Instagram DM Guide Section -->
+        <div id="dm-guide-section" class="container">
+            <h2 class="text-3xl font-bold mb-4">📩 How to DM Me on Instagram</h2>
+            <ul>
+                <li><span>📱</span> Open Instagram</li>
+                <li><span>🔍</span> Search <span class="font-bold">@ig.tridip</span></li>
+                <li><span>💬</span> Tap and open the chat</li>
+                <li><span>✍️</span> Type your reply</li>
+                <li><span>🚀</span> Hit send and make my day</li>
+            </ul>
+            <button id="copy-handle-btn">📋 Copy My Instagram Handle</button>
+            <p id="copy-feedback" class="text-sm"></p>
+        </div>
+    </main>
+
+    <!-- Audio element for the sound -->
+    <audio id="action-sound" preload="auto">
+        <!-- TODO: Replace 'your_sound_file.mp4' with the actual URL of your MP4 audio file -->
+        <source src=sad_meow.mp3 type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const passwordGate = document.getElementById('password-gate');
+        const passwordInput = document.getElementById('password-input');
+        const passwordSubmit = document.getElementById('password-submit');
+        const passwordFeedback = document.getElementById('password-feedback');
+        const loadingScreen = document.getElementById('loading-screen');
+        const replySection = document.getElementById('reply-section');
+        const replyButton = document.getElementById('reply-button');
+        const dmGuideSection = document.getElementById('dm-guide-section');
+        const copyHandleBtn = document.getElementById('copy-handle-btn');
+        const copyFeedback = document.getElementById('copy-feedback');
+        const loadingTextElement = document.getElementById('loading-text');
+        const actionSound = document.getElementById('action-sound'); // Get reference to the audio element
+
+        const instagramHandle = '@ig.tridip';
+        const correctPassword = 'Roshni Das'; // Password remains 'Roshni Das'
+
+        // Function to show a section and hide others
+        function showSection(sectionToShow) {
+            const sections = [passwordGate, loadingScreen, replySection, dmGuideSection];
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            sectionToShow.classList.add('active');
+        }
+
+        // Password Gate Logic
+        passwordSubmit.addEventListener('click', () => {
+            const enteredName = passwordInput.value.trim();
+            // Case-insensitive check for the password
+            if (enteredName.toLowerCase() === correctPassword.toLowerCase()) {
+                passwordFeedback.classList.remove('show');
+                showSection(loadingScreen);
+
+                // Play the sound after "Let's Go!" is pressed
+                actionSound.play().catch(error => {
+                    console.error("Error playing audio:", error);
+                    // Handle cases where audio playback might be blocked (e.g., by browser autoplay policies)
+                    // You might want to show a message to the user if audio fails to play
+                });
+
+                setTimeout(() => {
+                    showSection(replySection);
+                    createConfetti(); // Start confetti when reply section is shown
+                }, 4000); // Simulate loading time
+            } else {
+                passwordFeedback.textContent = "Oops! Even the website doesn’t recognize you 😅";
+                passwordFeedback.classList.add('show');
+            }
+        });
+
+        passwordInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                passwordSubmit.click();
+            }
+        });
+
+        // Reply Button Logic
+        replyButton.addEventListener('click', () => {
+            showSection(dmGuideSection);
+        });
+
+        // Copy Instagram Handle Logic
+        copyHandleBtn.addEventListener('click', () => {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = instagramHandle;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy'); // Fallback for navigator.clipboard
+            document.body.removeChild(tempInput);
+
+            copyFeedback.textContent = "Copied to clipboard! Now no excuses �";
+            copyFeedback.classList.add('show');
+            setTimeout(() => {
+                copyFeedback.classList.remove('show');
+            }, 2000);
+        });
+
+        // Confetti Animation
+        function createConfetti() {
+            const confettiCount = 50;
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                confetti.style.animationDuration = `${3 + Math.random() * 2}s`;
+                document.body.appendChild(confetti);
+
+                // Remove confetti after animation to prevent DOM clutter
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
+            }
+        }
+
+        // Initial state: show password gate
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection(passwordGate);
+        });
+    </script>
+</body>
+</html>
